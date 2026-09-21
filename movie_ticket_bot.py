@@ -412,7 +412,20 @@ async def stop_callback(update,context):
 async def check_callback(update,context):
     q=update.callback_query; await q.answer('Checking…'); await q.message.reply_text(await check_one(q.message.chat.id,int(q.data.split(':')[1]),context.bot),parse_mode='Markdown',disable_web_page_preview=True)
 async def help_cmd(update,context):
-    await update.message.reply_text('🎬 *Movie Radar commands*\n\n/alert — add a new alert\n/alerts — view/manage alerts\n/check — check all active alerts now\n/status — show monitoring status\n/stop <id> — stop one alert\n/stopall — stop all alerts\n/help — this help',parse_mode='Markdown')
+    message = update.effective_message
+    if message:
+        await message.reply_text(
+            '🎬 *Movie Radar commands*\n\n'
+            '/alert — add a new alert\n'
+            '/alerts — view/manage alerts\n'
+            '/check — check all active alerts now\n'
+            '/status — show monitoring status\n'
+            '/stop <id> — stop one alert\n'
+            '/stopall — stop all alerts\n'
+            '/cancel — cancel the current alert setup\n'
+            '/help — this help',
+            parse_mode='Markdown'
+        )
 
 # ---------------- Background ----------------
 async def monitor_job(context):
@@ -464,7 +477,10 @@ def main():
             TICKETS:[CallbackQueryHandler(set_tickets,pattern='^K:')],
             ROW:[CallbackQueryHandler(set_row,pattern='^R:'),MessageHandler(filters.TEXT&~filters.COMMAND,set_row_text)],
             CONFIRM:[CallbackQueryHandler(finish_confirm,pattern='^CONFIRM:')],
-        },fallbacks=[CommandHandler('cancel',lambda u,c: ConversationHandler.END)],per_message=False)
+        },fallbacks=[
+            CommandHandler('cancel',lambda u,c: ConversationHandler.END),
+            CommandHandler('help',help_cmd)
+        ],per_message=False)
     app.add_handler(CommandHandler('start',start)); app.add_handler(CommandHandler('alerts',alerts_cmd)); app.add_handler(CommandHandler('check',check_cmd)); app.add_handler(CommandHandler('status',status_cmd)); app.add_handler(CommandHandler('stop',stop_cmd)); app.add_handler(CommandHandler('stopall',stopall_cmd)); app.add_handler(CommandHandler('help',help_cmd))
     app.add_handler(conv)
     app.add_handler(CallbackQueryHandler(view_alert,pattern='^VIEW:'))
