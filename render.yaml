@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: movie-ticket-alert-bot
+    runtime: python
+    buildCommand: pip install --upgrade pip && pip install -r requirements.txt && python -m playwright install --with-deps chromium
+    startCommand: python -u movie_ticket_bot.py
+    healthCheckPath: /
+    envVars:
+      - key: PYTHONUNBUFFERED
+        value: "1"
