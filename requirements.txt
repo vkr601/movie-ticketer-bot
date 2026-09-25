@@ -1,2 +1,0 @@
-python-telegram-bot[job-queue]>=22.0,<23
-playwright>=1.52,<2
