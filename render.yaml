@@ -1,7 +1,0 @@
-services:
-  - type: web
-    name: movie-ticket-alert-bot
-    runtime: python
-    buildCommand: pip install -r requirements.txt && playwright install --with-deps chromium
-    startCommand: python movie_ticket_bot.py
-    healthCheckPath: /
